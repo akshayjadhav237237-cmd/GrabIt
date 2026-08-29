@@ -1,17 +1,12 @@
-const admin = require('firebase-admin');
-const { getAuth } = require('firebase-admin/auth');
-
 const projectId = process.env.FIREBASE_PROJECT_ID;
 const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
 let privateKey = process.env.FIREBASE_PRIVATE_KEY;
 
 let isMockMode = false;
 let auth = null;
-
-// Ensure admin.credential compatibility across firebase-admin versions
-if (!admin.credential && admin.cert) {
-  admin.credential = { cert: admin.cert };
-}
+let admin = {
+  auth: () => auth,
+};
 
 const hasValidCredentials = Boolean(
   projectId &&
@@ -23,6 +18,14 @@ const hasValidCredentials = Boolean(
 
 if (hasValidCredentials) {
   try {
+    const firebaseAdmin = require('firebase-admin');
+    const { getAuth } = require('firebase-admin/auth');
+    admin = firebaseAdmin;
+
+    if (!admin.credential && admin.cert) {
+      admin.credential = { cert: admin.cert };
+    }
+
     privateKey = privateKey.trim().replace(/^["']|["']$/g, '').replace(/\\n/g, '\n');
     const apps = admin.getApps ? admin.getApps() : (admin.apps || []);
     let app;
@@ -50,7 +53,16 @@ if (hasValidCredentials) {
 
 if (isMockMode) {
   const mockAuth = {
-    verifyIdToken: async () => {
+    verifyIdToken: async (token) => {
+      // Decode mock tokens
+      if (token.startsWith('mock-token-') || token === 'test-token') {
+        const uid = token.replace('mock-token-', '');
+        return {
+          uid: uid || 'test-user-uid',
+          email: `${uid || 'test'}@grabit.com`,
+          name: 'Demo User',
+        };
+      }
       throw new Error('Firebase Admin is running in mock mode. Real tokens cannot be verified.');
     },
   };
