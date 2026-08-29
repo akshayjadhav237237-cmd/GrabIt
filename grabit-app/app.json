@@ -1,0 +1,23 @@
+{
+  "expo": {
+    "name": "Grabit",
+    "slug": "grabit-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "description": "Why own it, when you can Grabit?",
+    "primaryColor": "#1F4D3A",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#FAF6EE"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#FAF6EE"
+      }
+    }
+  }
+}

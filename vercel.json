@@ -1,0 +1,11 @@
+{
+  "buildCommand": "cd grabit-app && npm install && npm run build",
+  "outputDirectory": "grabit-app/dist",
+  "framework": null,
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
