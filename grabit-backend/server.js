@@ -8,10 +8,17 @@ const errorMiddleware = require('./src/middleware/error.middleware');
 
 const app = express();
 
-// Connect to Database
-if (process.env.NODE_ENV !== 'test') {
-  connectDB();
-}
+// Connection check middleware (ensures DB is initialized/connected across Serverless & Persistent requests)
+app.use(async (req, res, next) => {
+  try {
+    if (process.env.NODE_ENV !== 'test') {
+      await connectDB();
+    }
+  } catch (err) {
+    console.warn('[DB] Request connection check notice:', err.message);
+  }
+  next();
+});
 
 // Middleware
 app.use(
@@ -48,10 +55,27 @@ app.use(errorMiddleware);
 
 const PORT = process.env.PORT || 5000;
 
+/**
+ * Async server startup sequence (Option A):
+ * Awaits MongoDB connection BEFORE calling app.listen() to prevent early request buffering errors.
+ */
+async function startServer() {
+  try {
+    if (process.env.NODE_ENV !== 'test') {
+      await connectDB();
+      console.log('MongoDB connected');
+    }
+    app.listen(PORT, () => {
+      console.log(`Grabit backend server running on port ${PORT}`);
+    });
+  } catch (err) {
+    console.error('Failed to start server:', err);
+    process.exit(1);
+  }
+}
+
 if (require.main === module) {
-  app.listen(PORT, () => {
-    console.log(`Grabit backend server running on port ${PORT}`);
-  });
+  startServer();
 }
 
 module.exports = app;
