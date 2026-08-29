@@ -3,6 +3,7 @@ const crypto = require('crypto');
 const path = require('path');
 const { Product, User, Booking } = require('../models');
 const { uploadToS3, deleteFromS3 } = require('../config/s3');
+const { SEED_PRODUCTS, DEMO_OWNER } = require('../data/seedData');
 
 /**
  * Helper to escape regex special characters
@@ -257,12 +258,83 @@ const getProducts = async (req, res, next) => {
       sortOption = { createdAt: -1 };
     }
 
-    const total = await Product.countDocuments(filter);
-    const products = await Product.find(filter)
-      .sort(sortOption)
-      .skip(skip)
-      .limit(limit)
-      .populate('owner', 'displayName avatarUrl rating');
+    let total = 0;
+    let products = [];
+
+    try {
+      total = await Product.countDocuments(filter);
+      if (total > 0) {
+        products = await Product.find(filter)
+          .sort(sortOption)
+          .skip(skip)
+          .limit(limit)
+          .populate('owner', 'displayName avatarUrl rating');
+      }
+    } catch (dbErr) {
+      console.warn('[Products] DB query notice:', dbErr.message);
+    }
+
+    // Fallback to in-memory SEED_PRODUCTS if database is empty or disconnected
+    if (products.length === 0 && (!req.query.mine || req.query.mine !== 'true')) {
+      let memoryList = SEED_PRODUCTS.map((p) => ({
+        ...p,
+        owner: DEMO_OWNER,
+        createdAt: new Date('2026-08-25T10:00:00.000Z'),
+      }));
+
+      // Apply category filter
+      if (req.query.category && typeof req.query.category === 'string') {
+        const cat = req.query.category.trim().toLowerCase();
+        if (cat) {
+          memoryList = memoryList.filter((p) => (p.category || '').toLowerCase() === cat);
+        }
+      }
+
+      // Apply city filter
+      if (req.query.city && typeof req.query.city === 'string') {
+        const cityQuery = req.query.city.trim().toLowerCase();
+        if (cityQuery) {
+          memoryList = memoryList.filter((p) =>
+            ((p.location && p.location.city) || '').toLowerCase().includes(cityQuery)
+          );
+        }
+      }
+
+      // Apply search filter
+      if (req.query.search && typeof req.query.search === 'string') {
+        const q = req.query.search.trim().toLowerCase();
+        if (q) {
+          memoryList = memoryList.filter(
+            (p) =>
+              (p.title || '').toLowerCase().includes(q) ||
+              (p.description || '').toLowerCase().includes(q) ||
+              (p.category || '').toLowerCase().includes(q)
+          );
+        }
+      }
+
+      // Apply price filter
+      if (minPrice !== null && !isNaN(minPrice)) {
+        memoryList = memoryList.filter(
+          (p) => p.rentalPrice && p.rentalPrice.perDay >= minPrice
+        );
+      }
+      if (maxPrice !== null && !isNaN(maxPrice)) {
+        memoryList = memoryList.filter(
+          (p) => p.rentalPrice && p.rentalPrice.perDay <= maxPrice
+        );
+      }
+
+      // Apply sort
+      if (req.query.sort === 'price_asc') {
+        memoryList.sort((a, b) => a.rentalPrice.perDay - b.rentalPrice.perDay);
+      } else if (req.query.sort === 'price_desc') {
+        memoryList.sort((a, b) => b.rentalPrice.perDay - a.rentalPrice.perDay);
+      }
+
+      total = memoryList.length;
+      products = memoryList.slice(skip, skip + limit);
+    }
 
     const totalPages = limit > 0 ? Math.ceil(total / limit) : 0;
 
@@ -288,24 +360,36 @@ const getProducts = async (req, res, next) => {
 const getProductById = async (req, res, next) => {
   try {
     const { id } = req.params;
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(404).json({
-        success: false,
-        message: 'Product not found',
+
+    try {
+      if (mongoose.Types.ObjectId.isValid(id)) {
+        const product = await Product.findById(id).populate('owner', 'displayName avatarUrl rating');
+        if (product) {
+          return res.status(200).json({
+            success: true,
+            data: product,
+          });
+        }
+      }
+    } catch (dbErr) {
+      console.warn('[Products] DB findById notice:', dbErr.message);
+    }
+
+    // Fallback to SEED_PRODUCTS
+    const fallbackProd = SEED_PRODUCTS.find((p) => p._id === id || p.title === id);
+    if (fallbackProd) {
+      return res.status(200).json({
+        success: true,
+        data: {
+          ...fallbackProd,
+          owner: DEMO_OWNER,
+        },
       });
     }
 
-    const product = await Product.findById(id).populate('owner', 'displayName avatarUrl rating');
-    if (!product) {
-      return res.status(404).json({
-        success: false,
-        message: 'Product not found',
-      });
-    }
-
-    return res.status(200).json({
-      success: true,
-      data: product,
+    return res.status(404).json({
+      success: false,
+      message: 'Product not found',
     });
   } catch (error) {
     next(error);

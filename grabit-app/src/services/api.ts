@@ -307,10 +307,19 @@ async function appendImageToFormData(
  * 4. Fallback for iOS simulator / web (localhost:5000/api).
  */
 export function getDefaultBaseURL(): string {
-  if (typeof process !== 'undefined' && process.env?.EXPO_PUBLIC_API_URL) {
-    return process.env.EXPO_PUBLIC_API_URL;
+  if (typeof process !== 'undefined' && (process.env as any)?.EXPO_PUBLIC_API_URL) {
+    return (process.env as any).EXPO_PUBLIC_API_URL;
   }
 
+  // 1. Browser/Web Deployment (e.g. Vercel)
+  if (typeof window !== 'undefined' && window.location && window.location.origin) {
+    const origin = window.location.origin;
+    if (origin && !origin.includes('localhost') && !origin.includes('127.0.0.1')) {
+      return `${origin}/api`;
+    }
+  }
+
+  // 2. Local network IP detection for Expo Go / physical devices
   try {
     const hostUri =
       Constants.expoConfig?.hostUri ||

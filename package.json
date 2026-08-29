@@ -1,0 +1,20 @@
+{
+  "name": "grabit-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "cd grabit-app && npm install && npm run build",
+    "start": "cd grabit-backend && npm start"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1121.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "expo-server-sdk": "^7.2.0",
+    "express": "^4.19.2",
+    "firebase-admin": "^14.3.0",
+    "mongoose": "^8.5.2",
+    "multer": "^2.3.0",
+    "razorpay": "^2.9.8"
+  }
+}

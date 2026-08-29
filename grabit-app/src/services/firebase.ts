@@ -26,20 +26,22 @@ export interface FirebaseAuthResult {
   token: string;
 }
 
+const env = (typeof process !== 'undefined' ? process.env : {}) as any;
+
 const firebaseConfig = {
-  apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY || 'mock-api-key',
-  authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN || 'grabit-dev.firebaseapp.com',
-  projectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID || 'grabit-dev',
-  storageBucket: process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET || 'grabit-dev.appspot.com',
-  messagingSenderId: process.env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || '123456789012',
-  appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID || '1:123456789012:web:abcdef123456',
+  apiKey: env.EXPO_PUBLIC_FIREBASE_API_KEY || 'mock-api-key',
+  authDomain: env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN || 'grabit-dev.firebaseapp.com',
+  projectId: env.EXPO_PUBLIC_FIREBASE_PROJECT_ID || 'grabit-dev',
+  storageBucket: env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET || 'grabit-dev.appspot.com',
+  messagingSenderId: env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || '123456789012',
+  appId: env.EXPO_PUBLIC_FIREBASE_APP_ID || '1:123456789012:web:abcdef123456',
 };
 
 // Check if credentials are affirmatively configured
 export const isConfigured = Boolean(
-  process.env.EXPO_PUBLIC_FIREBASE_API_KEY &&
-  process.env.EXPO_PUBLIC_FIREBASE_API_KEY !== 'mock-api-key' &&
-  !process.env.EXPO_PUBLIC_FIREBASE_API_KEY.startsWith('mock')
+  env.EXPO_PUBLIC_FIREBASE_API_KEY &&
+  env.EXPO_PUBLIC_FIREBASE_API_KEY !== 'mock-api-key' &&
+  !env.EXPO_PUBLIC_FIREBASE_API_KEY.startsWith('mock')
 );
 
 let app: FirebaseApp | null = null;
