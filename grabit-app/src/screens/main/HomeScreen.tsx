@@ -278,7 +278,7 @@ export const HomeScreen: React.FC = () => {
       <TouchableScale
         key={id}
         style={[styles.bannerCard, { width: CAROUSEL_WIDTH }]}
-        onPress={() => navigation.navigate('ProductDetail', { productId: id })}
+        onPress={() => navigation.navigate('ProductDetail', { productId: id, initialProduct: item })}
         scaleTo={0.98}
       >
         <View style={styles.bannerContentContainer}>
@@ -339,7 +339,7 @@ export const HomeScreen: React.FC = () => {
       <TouchableScale
         key={id}
         style={styles.horizontalCard}
-        onPress={() => navigation.navigate('ProductDetail', { productId: id })}
+        onPress={() => navigation.navigate('ProductDetail', { productId: id, initialProduct: item })}
         scaleTo={0.96}
       >
         <View style={styles.horizontalCardImageBox}>

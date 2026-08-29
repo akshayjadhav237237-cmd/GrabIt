@@ -29,9 +29,9 @@ const SEED_PRODUCTS = [
       'Compact and lightweight 24.2 MP APS-C mirrorless camera featuring DIGIC X image processor, 4K60p video recording, and Dual Pixel CMOS AF II with subject detection. Includes RF-S 18-45mm IS STM lens, two rechargeable batteries, 64GB high-speed SD card, and padded protective carry bag. Perfect for travel photography, vlogging, and content creation.',
     category: 'Cameras',
     images: [
-      'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1512790182412-b19e6d62bc39?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=720&q=75&auto=format',
+      'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&w=720&q=75&auto=format',
+      'https://images.unsplash.com/photo-1512790182412-b19e6d62bc39?auto=format&fit=crop&w=720&q=75&auto=format',
     ],
     rentalPrice: {
       perDay: 850,
@@ -60,9 +60,9 @@ const SEED_PRODUCTS = [
       'Flagship 33MP full-frame Exmor R CMOS sensor with BIONZ XR processing engine, 4K 60p 10-bit 4:2:2 video capture, real-time eye autofocus for human/animal/bird, and 5-axis optical in-body image stabilization. Includes two Sony NP-FZ100 batteries, dual battery charger, strap, and Pelican hard case.',
     category: 'Cameras',
     images: [
-      'https://images.unsplash.com/photo-1512790182412-b19e6d62bc39?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1606978434861-689b25a3ea23?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1512790182412-b19e6d62bc39?auto=format&fit=crop&w=720&q=75&auto=format',
+      'https://images.unsplash.com/photo-1606978434861-689b25a3ea23?auto=format&fit=crop&w=720&q=75&auto=format',
+      'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&w=720&q=75&auto=format',
     ],
     rentalPrice: {
       perDay: 2200,
@@ -93,9 +93,9 @@ const SEED_PRODUCTS = [
       'Ultra-compact sub-249g folding drone equipped with omnidirectional obstacle sensing, 4K/60fps HDR true vertical shooting, 20km FHD video transmission, and ActiveTrack 360°. Includes DJI RC 2 remote with built-in screen, 3 Intelligent Flight Batteries, two-way charging hub, spare propellers, ND filter set, and shoulder bag.',
     category: 'Drones',
     images: [
-      'https://images.unsplash.com/photo-1508614589041-895b88991e3e?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1473968512647-3e447244af8f?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1527977966376-1c8408f9f108?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1508614589041-895b88991e3e?auto=format&fit=crop&w=720&q=75&auto=format',
+      'https://images.unsplash.com/photo-1473968512647-3e447244af8f?auto=format&fit=crop&w=720&q=75&auto=format',
+      'https://images.unsplash.com/photo-1527977966376-1c8408f9f108?auto=format&fit=crop&w=720&q=75&auto=format',
     ],
     rentalPrice: {
       perDay: 1100,
@@ -124,9 +124,9 @@ const SEED_PRODUCTS = [
       'Dual primary camera drone featuring 1/1.3-inch CMOS wide-angle and 3x medium telephoto cameras, 46-minute maximum flight time, omnidirectional obstacle detection, and O4 HD video transmission. Delivered with DJI RC 2 controller, 3 batteries, multi-charger, Freewell ND filter kit, and rugged case.',
     category: 'Drones',
     images: [
-      'https://images.unsplash.com/photo-1527977966376-1c8408f9f108?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1521405924368-64c5b84bec60?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1508614589041-895b88991e3e?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1527977966376-1c8408f9f108?auto=format&fit=crop&w=720&q=75&auto=format',
+      'https://images.unsplash.com/photo-1521405924368-64c5b84bec60?auto=format&fit=crop&w=720&q=75&auto=format',
+      'https://images.unsplash.com/photo-1508614589041-895b88991e3e?auto=format&fit=crop&w=720&q=75&auto=format',
     ],
     rentalPrice: {
       perDay: 1650,
@@ -157,9 +157,9 @@ const SEED_PRODUCTS = [
       'High-performance brushless combo kit including 1/2-inch drill/driver (compact and lightweight with 2-speed transmission) and 1/4-inch impact driver producing 1,500 in-lbs of torque. Includes two 20V MAX 2.0Ah lithium-ion batteries, fast charger, 30-piece drill and drive bit accessory set, and heavy-duty contractor bag.',
     category: 'Power Tools',
     images: [
-      'https://images.unsplash.com/photo-1504148455328-c376907d081c?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1572981779307-38b8cabb2407?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1581147036324-c17ac41dfa6c?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1504148455328-c376907d081c?auto=format&fit=crop&w=720&q=75&auto=format',
+      'https://images.unsplash.com/photo-1572981779307-38b8cabb2407?auto=format&fit=crop&w=720&q=75&auto=format',
+      'https://images.unsplash.com/photo-1581147036324-c17ac41dfa6c?auto=format&fit=crop&w=720&q=75&auto=format',
     ],
     rentalPrice: {
       perDay: 350,
@@ -188,9 +188,9 @@ const SEED_PRODUCTS = [
       'Heavy-duty 800W corded rotary hammer delivering 2.7 Joules of impact energy for fast drilling and chiseling in concrete, brick, masonry, and steel. Equipped with SDS-plus chuck, rotating brush plate for equal forward/reverse power, overload clutch, depth stop, auxiliary handle, and hard carrying case with SDS drill bit set.',
     category: 'Power Tools',
     images: [
-      'https://images.unsplash.com/photo-1581147036324-c17ac41dfa6c?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1530124566582-a618bc2615dc?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1504148455328-c376907d081c?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1581147036324-c17ac41dfa6c?auto=format&fit=crop&w=720&q=75&auto=format',
+      'https://images.unsplash.com/photo-1530124566582-a618bc2615dc?auto=format&fit=crop&w=720&q=75&auto=format',
+      'https://images.unsplash.com/photo-1504148455328-c376907d081c?auto=format&fit=crop&w=720&q=75&auto=format',
     ],
     rentalPrice: {
       perDay: 220,
@@ -221,9 +221,9 @@ const SEED_PRODUCTS = [
       'Massive 240-watt peak output portable party speaker featuring JBL Pro Sound, dynamic synchronized RGB light show, 18-hour battery life, and smooth-glide wheels with telescopic handle. Includes dual microphone inputs, instrument input, Bluetooth 5.1, and splashproof IPX4 protection. Ideal for outdoor parties, weddings, and backyard movie nights.',
     category: 'Event Equipment',
     images: [
-      'https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=720&q=75&auto=format',
+      'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&w=720&q=75&auto=format',
+      'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?auto=format&fit=crop&w=720&q=75&auto=format',
     ],
     rentalPrice: {
       perDay: 550,
@@ -252,9 +252,9 @@ const SEED_PRODUCTS = [
       'Legendary studio dynamic vocal microphone featuring flat, wide-range frequency response for exceptionally clean and natural reproduction of voice and music. Includes Cloud Microphones Cloudlifter CL-1 mic activator (+25dB clean gain), Mogami Gold XLR cable, K&M heavy-duty boom stand, and A7WS detachable windscreen.',
     category: 'Event Equipment',
     images: [
-      'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1520523839898-5071282543e2?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?auto=format&fit=crop&w=720&q=75&auto=format',
+      'https://images.unsplash.com/photo-1520523839898-5071282543e2?auto=format&fit=crop&w=720&q=75&auto=format',
+      'https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=720&q=75&auto=format',
     ],
     rentalPrice: {
       perDay: 650,
@@ -285,9 +285,9 @@ const SEED_PRODUCTS = [
       'Apple M3 Pro chip with 12-core CPU, 18-core GPU, 36GB unified memory, and 512GB blazing-fast SSD storage. Features 16.2-inch Liquid Retina XDR display with ProMotion 120Hz, studio-quality three-mic array, six-speaker sound system with Spatial Audio, 140W USB-C Power Adapter, and MagSafe 3 cable in Space Black. Perfect for 4K video editing, 3D rendering, and software development.',
     category: 'Electronics',
     images: [
-      'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=720&q=75&auto=format',
+      'https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?auto=format&fit=crop&w=720&q=75&auto=format',
+      'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=720&q=75&auto=format',
     ],
     rentalPrice: {
       perDay: 2400,
@@ -316,9 +316,9 @@ const SEED_PRODUCTS = [
       'Industry-leading noise canceling headphones powered by two processors and 8 microphones for unparalleled noise reduction. Features Auto NC Optimizer, 30-hour battery life with quick charging (3 min charge for 3 hours playback), crystal clear hands-free calling with 4 beamforming mics, multipoint connection, and premium collapsible travel case.',
     category: 'Electronics',
     images: [
-      'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1484704849700-f032a568e944?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=720&q=75&auto=format',
+      'https://images.unsplash.com/photo-1484704849700-f032a568e944?auto=format&fit=crop&w=720&q=75&auto=format',
+      'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=720&q=75&auto=format',
     ],
     rentalPrice: {
       perDay: 380,
@@ -349,9 +349,9 @@ const SEED_PRODUCTS = [
       'Premium technical trekking backpack equipped with Anti-Gravity 3D suspended mesh suspension system and Fit-on-the-Fly custom adjustable hipbelt and harness. Features 65-liter capacity, floating top lid with dual zippered pockets, integrated removable raincover, trekking pole attachment, and internal hydration sleeve. Size: Medium/Large (Mythic Blue).',
     category: 'Other',
     images: [
-      'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1622560480605-d83c853bc5c3?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=720&q=75&auto=format',
+      'https://images.unsplash.com/photo-1622560480605-d83c853bc5c3?auto=format&fit=crop&w=720&q=75&auto=format',
+      'https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=720&q=75&auto=format',
     ],
     rentalPrice: {
       perDay: 280,
@@ -380,9 +380,9 @@ const SEED_PRODUCTS = [
       'Legendary indestructible rotomolded heavy-duty cooler featuring up to 3 inches of PermaFrost insulation and ColdLock gasket for days of ice retention. Holds up to 28 cans with a 2:1 ice-to-contents ratio or 34 pounds of ice. Equipped with T-Rex lid latches, NeverFail hinge system, DoubleHaul military-grade polyester rope handles, and dry goods basket.',
     category: 'Other',
     images: [
-      'https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1533240332313-0db49b459ad6?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=720&q=75&auto=format',
+      'https://images.unsplash.com/photo-1533240332313-0db49b459ad6?auto=format&fit=crop&w=720&q=75&auto=format',
+      'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=720&q=75&auto=format',
     ],
     rentalPrice: {
       perDay: 420,

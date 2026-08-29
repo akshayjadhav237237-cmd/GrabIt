@@ -100,9 +100,10 @@ export const ProductDetailScreen: React.FC = () => {
   const navigation = useNavigation<any>();
   const route = useRoute<any>();
   const productId = route.params?.productId;
+  const initialProduct: Product | undefined = route.params?.initialProduct || route.params?.product;
 
-  const [product, setProduct] = useState<Product | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [product, setProduct] = useState<Product | null>(initialProduct || null);
+  const [isLoading, setIsLoading] = useState<boolean>(!initialProduct);
   const [error, setError] = useState<string | null>(null);
   const [activeImageIndex, setActiveImageIndex] = useState<number>(0);
   const [carouselWidth, setCarouselWidth] = useState<number>(() => {
@@ -122,7 +123,18 @@ export const ProductDetailScreen: React.FC = () => {
 
   // Availability & Blackout Dates States
   const [isAvailabilityModalVisible, setIsAvailabilityModalVisible] = useState<boolean>(false);
-  const [blackoutDates, setBlackoutDates] = useState<BlackoutPeriod[]>([]);
+  const [blackoutDates, setBlackoutDates] = useState<BlackoutPeriod[]>(() => {
+    if (initialProduct?.availability?.blackoutDates && Array.isArray(initialProduct.availability.blackoutDates)) {
+      return initialProduct.availability.blackoutDates
+        .filter((b: any) => b && (b.startDate || b.endDate))
+        .map((b: any) => ({
+          startDate: typeof b.startDate === 'string' ? b.startDate : formatDateISO(b.startDate),
+          endDate: typeof b.endDate === 'string' ? b.endDate : formatDateISO(b.endDate),
+          reason: b.reason || '',
+        }));
+    }
+    return [];
+  });
   const [newBlackoutStart, setNewBlackoutStart] = useState<Date>(() => getTomorrow());
   const [newBlackoutEnd, setNewBlackoutEnd] = useState<Date>(() => getFutureDate(getTomorrow(), 2));
   const [newBlackoutReason, setNewBlackoutReason] = useState<string>('');
@@ -178,50 +190,56 @@ export const ProductDetailScreen: React.FC = () => {
       return;
     }
 
-    const fetchProduct = async () => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const res = await api.getProductById(productId);
-        if (res.success && res.data) {
-          const item = (res.data as any)?.product || (res.data as any)?.data || res.data;
-          setProduct(item);
-          if (item?.availability?.blackoutDates && Array.isArray(item.availability.blackoutDates)) {
-            setBlackoutDates(
-              item.availability.blackoutDates
-                .filter((b: any) => b && (b.startDate || b.endDate))
-                .map((b: any) => ({
-                  startDate: typeof b.startDate === 'string' ? b.startDate : formatDateISO(b.startDate),
-                  endDate: typeof b.endDate === 'string' ? b.endDate : formatDateISO(b.endDate),
-                  reason: b.reason || '',
-                }))
-            );
-          }
-        } else {
-          setError(res.error || 'Failed to load product details.');
+    let isMounted = true;
+
+    const loadData = async () => {
+      // Parallelize product fetch and wishlist status check for blazing fast loading
+      const [productRes, wishlistRes] = await Promise.allSettled([
+        api.getProductById(productId),
+        api.getWishlist(),
+      ]);
+
+      if (!isMounted) return;
+
+      if (productRes.status === 'fulfilled' && productRes.value.success && productRes.value.data) {
+        const item =
+          (productRes.value.data as any)?.product ||
+          (productRes.value.data as any)?.data ||
+          productRes.value.data;
+        setProduct(item);
+        if (item?.availability?.blackoutDates && Array.isArray(item.availability.blackoutDates)) {
+          setBlackoutDates(
+            item.availability.blackoutDates
+              .filter((b: any) => b && (b.startDate || b.endDate))
+              .map((b: any) => ({
+                startDate: typeof b.startDate === 'string' ? b.startDate : formatDateISO(b.startDate),
+                endDate: typeof b.endDate === 'string' ? b.endDate : formatDateISO(b.endDate),
+                reason: b.reason || '',
+              }))
+          );
         }
-      } catch (err: any) {
-        setError(err.message || 'An error occurred while fetching product details.');
-      } finally {
-        setIsLoading(false);
+      } else if (!initialProduct) {
+        const errVal =
+          productRes.status === 'fulfilled'
+            ? productRes.value.error
+            : productRes.reason?.message || 'Failed to load product details.';
+        setError(errVal || 'Failed to load product details.');
       }
+
+      if (wishlistRes.status === 'fulfilled' && wishlistRes.value.success && wishlistRes.value.data) {
+        const list = Array.isArray(wishlistRes.value.data) ? wishlistRes.value.data : [];
+        const found = list.some((p) => (p?._id || p?.id) === productId);
+        setIsSaved(found);
+      }
+
+      setIsLoading(false);
     };
 
-    const checkWishlistStatus = async () => {
-      try {
-        const res = await api.getWishlist();
-        if (res.success && res.data) {
-          const list = Array.isArray(res.data) ? res.data : [];
-          const found = list.some((p) => (p?._id || p?.id) === productId);
-          setIsSaved(found);
-        }
-      } catch {
-        // ignore
-      }
-    };
+    loadData();
 
-    fetchProduct();
-    checkWishlistStatus();
+    return () => {
+      isMounted = false;
+    };
   }, [productId]);
 
   const handleAdjustBlackoutStart = (daysDelta: number) => {
@@ -521,12 +539,70 @@ export const ProductDetailScreen: React.FC = () => {
     );
   };
 
-  if (isLoading) {
+  if (isLoading && !product) {
     return (
       <ScreenContainer>
-        <View style={styles.centerContainer}>
-          <LoadingIllustration size={160} />
-          <Text style={styles.loadingText}>Loading item details...</Text>
+        <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+          {/* Skeleton Top Nav Bar */}
+          <View style={styles.skeletonTopBar}>
+            <TouchableScale style={styles.navBackButton} onPress={() => navigation.goBack()}>
+              <ChevronIcon size={16} color={theme.colors.textPrimary} direction="left" />
+              <Text style={styles.navBackText}>Back</Text>
+            </TouchableScale>
+            <View style={styles.skeletonHeartPlaceholder}>
+              <HeartIcon size={20} color={theme.colors.border} />
+            </View>
+          </View>
+
+          {/* Skeleton Hero Image Banner */}
+          <View style={styles.skeletonHeroImage}>
+            <CameraIcon size={44} color={theme.colors.border} />
+          </View>
+
+          {/* Skeleton Meta & Title */}
+          <View style={styles.skeletonContentSection}>
+            <View style={styles.skeletonBadgeRow}>
+              <View style={styles.skeletonBadge} />
+              <View style={styles.skeletonLocationChip} />
+            </View>
+            <View style={styles.skeletonTitleLong} />
+            <View style={styles.skeletonTitleShort} />
+
+            {/* Skeleton Pricing Card */}
+            <View style={styles.skeletonPricingCard}>
+              <View style={styles.skeletonPriceCol}>
+                <View style={styles.skeletonPriceLabel} />
+                <View style={styles.skeletonPriceValue} />
+              </View>
+              <View style={styles.skeletonPriceDivider} />
+              <View style={styles.skeletonPriceCol}>
+                <View style={styles.skeletonPriceLabel} />
+                <View style={styles.skeletonPriceValue} />
+              </View>
+            </View>
+
+            {/* Skeleton Owner Row */}
+            <View style={styles.skeletonOwnerCard}>
+              <View style={styles.skeletonAvatar} />
+              <View style={styles.skeletonOwnerInfo}>
+                <View style={styles.skeletonOwnerName} />
+                <View style={styles.skeletonOwnerSub} />
+              </View>
+            </View>
+
+            {/* Skeleton Description Block */}
+            <View style={styles.skeletonDescCard}>
+              <View style={styles.skeletonDescHeader} />
+              <View style={styles.skeletonDescLine} />
+              <View style={styles.skeletonDescLine} />
+              <View style={styles.skeletonDescLineShort} />
+            </View>
+          </View>
+        </ScrollView>
+
+        {/* Skeleton Bottom Action Bar */}
+        <View style={styles.skeletonBottomBar}>
+          <View style={styles.skeletonCtaButton} />
         </View>
       </ScreenContainer>
     );
@@ -2216,6 +2292,174 @@ const styles = StyleSheet.create({
     fontSize: theme.typography.fontSize.sm,
     fontWeight: theme.typography.fontWeight.medium,
     lineHeight: theme.typography.lineHeight.sm,
+  },
+  skeletonTopBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: theme.spacing.md,
+    paddingTop: theme.spacing.sm,
+    paddingBottom: theme.spacing.xs,
+  },
+  skeletonHeartPlaceholder: {
+    width: 40,
+    height: 40,
+    borderRadius: theme.borderRadius.full,
+    backgroundColor: theme.colors.surfaceSubtle,
+    borderWidth: theme.borderWidth.thin,
+    borderColor: theme.colors.border,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  skeletonHeroImage: {
+    height: 260,
+    marginHorizontal: theme.spacing.md,
+    backgroundColor: theme.colors.surfaceSubtle,
+    borderRadius: theme.borderRadius.lg,
+    borderWidth: theme.borderWidth.thin,
+    borderColor: theme.colors.border,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: theme.spacing.md,
+  },
+  skeletonContentSection: {
+    paddingHorizontal: theme.spacing.md,
+  },
+  skeletonBadgeRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: theme.spacing.sm,
+    gap: theme.spacing.sm,
+  },
+  skeletonBadge: {
+    width: 80,
+    height: 24,
+    backgroundColor: theme.colors.surfaceSubtle,
+    borderRadius: theme.borderRadius.sm,
+  },
+  skeletonLocationChip: {
+    width: 100,
+    height: 24,
+    backgroundColor: theme.colors.surfaceSubtle,
+    borderRadius: theme.borderRadius.sm,
+  },
+  skeletonTitleLong: {
+    width: '90%',
+    height: 22,
+    backgroundColor: theme.colors.surfaceSubtle,
+    borderRadius: theme.borderRadius.xs,
+    marginBottom: theme.spacing.xs,
+  },
+  skeletonTitleShort: {
+    width: '60%',
+    height: 22,
+    backgroundColor: theme.colors.surfaceSubtle,
+    borderRadius: theme.borderRadius.xs,
+    marginBottom: theme.spacing.md,
+  },
+  skeletonPricingCard: {
+    flexDirection: 'row',
+    backgroundColor: theme.colors.surface,
+    padding: theme.spacing.md,
+    borderRadius: theme.borderRadius.md,
+    borderWidth: theme.borderWidth.thin,
+    borderColor: theme.colors.border,
+    marginBottom: theme.spacing.md,
+    alignItems: 'center',
+  },
+  skeletonPriceCol: {
+    flex: 1,
+    gap: theme.spacing.xs,
+  },
+  skeletonPriceLabel: {
+    width: '50%',
+    height: 12,
+    backgroundColor: theme.colors.surfaceSubtle,
+    borderRadius: theme.borderRadius.xs,
+  },
+  skeletonPriceValue: {
+    width: '75%',
+    height: 20,
+    backgroundColor: theme.colors.surfaceSubtle,
+    borderRadius: theme.borderRadius.xs,
+  },
+  skeletonPriceDivider: {
+    width: 1,
+    height: 36,
+    backgroundColor: theme.colors.border,
+    marginHorizontal: theme.spacing.md,
+  },
+  skeletonOwnerCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: theme.colors.surface,
+    padding: theme.spacing.md,
+    borderRadius: theme.borderRadius.md,
+    borderWidth: theme.borderWidth.thin,
+    borderColor: theme.colors.border,
+    marginBottom: theme.spacing.md,
+    gap: theme.spacing.md,
+  },
+  skeletonAvatar: {
+    width: 44,
+    height: 44,
+    borderRadius: theme.borderRadius.full,
+    backgroundColor: theme.colors.surfaceSubtle,
+  },
+  skeletonOwnerInfo: {
+    flex: 1,
+    gap: theme.spacing.xs,
+  },
+  skeletonOwnerName: {
+    width: '60%',
+    height: 16,
+    backgroundColor: theme.colors.surfaceSubtle,
+    borderRadius: theme.borderRadius.xs,
+  },
+  skeletonOwnerSub: {
+    width: '40%',
+    height: 12,
+    backgroundColor: theme.colors.surfaceSubtle,
+    borderRadius: theme.borderRadius.xs,
+  },
+  skeletonDescCard: {
+    backgroundColor: theme.colors.surface,
+    padding: theme.spacing.md,
+    borderRadius: theme.borderRadius.md,
+    borderWidth: theme.borderWidth.thin,
+    borderColor: theme.colors.border,
+    marginBottom: theme.spacing.xl,
+    gap: theme.spacing.xs,
+  },
+  skeletonDescHeader: {
+    width: 100,
+    height: 16,
+    backgroundColor: theme.colors.surfaceSubtle,
+    borderRadius: theme.borderRadius.xs,
+    marginBottom: theme.spacing.xs,
+  },
+  skeletonDescLine: {
+    width: '100%',
+    height: 12,
+    backgroundColor: theme.colors.surfaceSubtle,
+    borderRadius: theme.borderRadius.xs,
+  },
+  skeletonDescLineShort: {
+    width: '70%',
+    height: 12,
+    backgroundColor: theme.colors.surfaceSubtle,
+    borderRadius: theme.borderRadius.xs,
+  },
+  skeletonBottomBar: {
+    padding: theme.spacing.md,
+    backgroundColor: theme.colors.surface,
+    borderTopWidth: theme.borderWidth.thin,
+    borderColor: theme.colors.border,
+  },
+  skeletonCtaButton: {
+    height: 48,
+    backgroundColor: theme.colors.surfaceSubtle,
+    ...theme.borderRadius.buttonAsymmetric,
   },
 });
 

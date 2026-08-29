@@ -7,12 +7,21 @@ import api from '../services/api';
  * @param url The image URL or path string from API/local asset
  * @returns Fully qualified image URL string, or null if invalid/empty
  */
-export function resolveImageUrl(url?: string | null): string | null {
+export function resolveImageUrl(url?: string | null, width: number = 720): string | null {
   if (!url || typeof url !== 'string' || !url.trim()) {
     return null;
   }
 
-  const trimmed = url.trim();
+  let trimmed = url.trim();
+
+  // If it's an Unsplash image, optimize size & quality for blazing fast mobile rendering
+  if (trimmed.includes('images.unsplash.com')) {
+    if (/w=\d+/.test(trimmed)) {
+      trimmed = trimmed.replace(/w=\d+/, `w=${width}`).replace(/q=\d+/, 'q=75');
+    } else {
+      trimmed += `${trimmed.includes('?') ? '&' : '?'}w=${width}&q=75&auto=format`;
+    }
+  }
 
   // Already absolute or scheme-based URI
   if (

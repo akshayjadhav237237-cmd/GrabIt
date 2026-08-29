@@ -320,7 +320,7 @@ export const SearchScreen: React.FC = () => {
     return (
       <TouchableScale
         style={styles.gridCard}
-        onPress={() => navigation.navigate('ProductDetail', { productId: id })}
+        onPress={() => navigation.navigate('ProductDetail', { productId: id, initialProduct: item })}
         scaleTo={0.97}
       >
         {/* Compact Card Image Container */}
@@ -379,7 +379,7 @@ export const SearchScreen: React.FC = () => {
 
             <TouchableScale
               style={styles.rentButton}
-              onPress={() => navigation.navigate('ProductDetail', { productId: id })}
+              onPress={() => navigation.navigate('ProductDetail', { productId: id, initialProduct: item })}
               scaleTo={0.92}
             >
               <Text style={styles.rentButtonText}>Rent</Text>

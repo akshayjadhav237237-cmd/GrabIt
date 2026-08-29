@@ -126,7 +126,7 @@ export const WishlistScreen: React.FC = () => {
     return (
       <TouchableScale
         style={styles.card}
-        onPress={() => navigation.navigate('ProductDetail', { productId: id })}
+        onPress={() => navigation.navigate('ProductDetail', { productId: id, initialProduct: item })}
         scaleTo={0.98}
       >
         {/* Product Image / Placeholder Box */}
