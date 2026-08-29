@@ -709,14 +709,15 @@ export const ProductDetailScreen: React.FC = () => {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* Top Back Navigation & Heart Toggle Row */}
+        {/* Floating Top Navigation: Back + Animated Wishlist Heart */}
         <View style={styles.topNavRow}>
           <TouchableScale
             style={styles.navBackButton}
             onPress={() => navigation.goBack()}
-            accessibilityLabel="Back to listings"
+            accessibilityRole="button"
+            accessibilityLabel="Go back"
           >
-            <ChevronIcon size={16} color={theme.colors.textPrimary} direction="left" />
+            <ChevronIcon size={18} color={theme.colors.textPrimary} direction="left" />
             <Text style={styles.navBackText}>Back</Text>
           </TouchableScale>
 
@@ -740,38 +741,50 @@ export const ProductDetailScreen: React.FC = () => {
             }}
           >
             <View style={styles.carouselSlideWrapper}>
-              <FlatList
-                data={images}
-                horizontal
-                pagingEnabled
-                showsHorizontalScrollIndicator={false}
-                keyExtractor={(item, index) =>
-                  typeof item === 'string' ? `${item}-${index}` : `img-${index}`
-                }
-                onScroll={handleScroll}
-                onMomentumScrollEnd={handleScroll}
-                scrollEventThrottle={16}
-                renderItem={({ item }) => {
-                  const rawUri =
-                    typeof item === 'string' ? item : (item as any)?.url || (item as any)?.uri || '';
-                  const imgUri = resolveImageUrl(rawUri);
-                  return (
-                    <View style={[styles.slide, { width: safeCarouselWidth }]}>
-                      {imgUri ? (
-                        <Image
-                          source={{ uri: imgUri }}
-                          style={styles.carouselImage}
-                          resizeMode="cover"
-                        />
-                      ) : (
-                        <View style={styles.heroBox}>
-                          <CameraIcon size={44} color={theme.colors.primaryLight} />
-                        </View>
-                      )}
-                    </View>
-                  );
-                }}
-              />
+              {images.length === 1 ? (
+                <View style={[styles.slide, { width: '100%' }]}>
+                  <Image
+                    source={{ uri: resolveImageUrl(images[0]) || images[0] }}
+                    style={styles.carouselImage}
+                    resizeMode="cover"
+                  />
+                </View>
+              ) : (
+                <FlatList
+                  style={styles.carouselFlatList}
+                  contentContainerStyle={styles.carouselContentContainer}
+                  data={images}
+                  horizontal
+                  pagingEnabled
+                  showsHorizontalScrollIndicator={false}
+                  keyExtractor={(item, index) =>
+                    typeof item === 'string' ? `${item}-${index}` : `img-${index}`
+                  }
+                  onScroll={handleScroll}
+                  onMomentumScrollEnd={handleScroll}
+                  scrollEventThrottle={16}
+                  renderItem={({ item }) => {
+                    const rawUri =
+                      typeof item === 'string' ? item : (item as any)?.url || (item as any)?.uri || '';
+                    const imgUri = resolveImageUrl(rawUri) || rawUri;
+                    return (
+                      <View style={[styles.slide, { width: safeCarouselWidth }]}>
+                        {imgUri ? (
+                          <Image
+                            source={{ uri: imgUri }}
+                            style={styles.carouselImage}
+                            resizeMode="cover"
+                          />
+                        ) : (
+                          <View style={styles.heroBox}>
+                            <CameraIcon size={44} color={theme.colors.primaryLight} />
+                          </View>
+                        )}
+                      </View>
+                    );
+                  }}
+                />
+              )}
               <View style={styles.heroCategoryBadge}>
                 <TagIcon size={12} color={theme.colors.primaryDark} style={styles.heroBadgeIcon} />
                 <Text style={styles.heroCategoryBadgeText}>{resolvedCategory || 'General'}</Text>
@@ -1420,9 +1433,11 @@ const styles = StyleSheet.create({
   },
   carouselContainer: {
     marginBottom: theme.spacing.lg,
+    width: '100%',
   },
   carouselSlideWrapper: {
-    height: theme.spacing.xxl * 5,
+    height: 260,
+    width: '100%',
     ...theme.borderRadius.cardAsymmetric,
     overflow: 'hidden',
     backgroundColor: theme.colors.surfaceSubtle,
@@ -1431,12 +1446,23 @@ const styles = StyleSheet.create({
     position: 'relative',
     ...theme.shadows.sm,
   },
+  carouselFlatList: {
+    width: '100%',
+    height: 260,
+  },
+  carouselContentContainer: {
+    alignItems: 'center',
+  },
   slide: {
-    height: '100%',
+    height: 260,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: theme.colors.surfaceSubtle,
+    overflow: 'hidden',
   },
   carouselImage: {
     width: '100%',
-    height: '100%',
+    height: 260,
   },
   paginationContainer: {
     flexDirection: 'row',
