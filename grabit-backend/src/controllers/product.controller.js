@@ -261,17 +261,19 @@ const getProducts = async (req, res, next) => {
     let total = 0;
     let products = [];
 
-    try {
-      total = await Product.countDocuments(filter);
-      if (total > 0) {
-        products = await Product.find(filter)
-          .sort(sortOption)
-          .skip(skip)
-          .limit(limit)
-          .populate('owner', 'displayName avatarUrl rating');
+    if (mongoose.connection.readyState === 1) {
+      try {
+        total = await Product.countDocuments(filter);
+        if (total > 0) {
+          products = await Product.find(filter)
+            .sort(sortOption)
+            .skip(skip)
+            .limit(limit)
+            .populate('owner', 'displayName avatarUrl rating');
+        }
+      } catch (dbErr) {
+        console.warn('[Products] DB query notice:', dbErr.message);
       }
-    } catch (dbErr) {
-      console.warn('[Products] DB query notice:', dbErr.message);
     }
 
     // Fallback to in-memory SEED_PRODUCTS if database is empty or disconnected
@@ -361,18 +363,20 @@ const getProductById = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    try {
-      if (mongoose.Types.ObjectId.isValid(id)) {
-        const product = await Product.findById(id).populate('owner', 'displayName avatarUrl rating');
-        if (product) {
-          return res.status(200).json({
-            success: true,
-            data: product,
-          });
+    if (mongoose.connection.readyState === 1) {
+      try {
+        if (mongoose.Types.ObjectId.isValid(id)) {
+          const product = await Product.findById(id).populate('owner', 'displayName avatarUrl rating');
+          if (product) {
+            return res.status(200).json({
+              success: true,
+              data: product,
+            });
+          }
         }
+      } catch (dbErr) {
+        console.warn('[Products] DB findById notice:', dbErr.message);
       }
-    } catch (dbErr) {
-      console.warn('[Products] DB findById notice:', dbErr.message);
     }
 
     // Fallback to SEED_PRODUCTS

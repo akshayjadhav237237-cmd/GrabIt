@@ -10,10 +10,27 @@ const connectDB = async () => {
     return cachedConnection;
   }
 
+  const isServerless = Boolean(
+    process.env.VERCEL ||
+    process.env.VERCEL_ENV ||
+    process.env.AWS_LAMBDA_FUNCTION_NAME
+  );
+
+  const mongoURI = process.env.MONGODB_URI;
+
+  // In serverless cloud environments without a configured remote MongoDB URI,
+  // skip trying to connect to localhost:27017 to eliminate 10s connection timeouts.
+  if (isServerless && (!mongoURI || mongoURI.includes('localhost') || mongoURI.includes('127.0.0.1'))) {
+    console.log('[DB] Serverless standalone mode: serving from high-performance embedded seed store.');
+    return null;
+  }
+
+  const targetURI = mongoURI || 'mongodb://localhost:27017/grabit';
+
   try {
-    const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/grabit';
-    const conn = await mongoose.connect(mongoURI, {
-      serverSelectionTimeoutMS: 5000,
+    const conn = await mongoose.connect(targetURI, {
+      serverSelectionTimeoutMS: 2000,
+      bufferCommands: false, // Disable buffering so failed DB connects don't block
     });
     cachedConnection = conn;
     console.log(`MongoDB Connected: ${conn.connection.host}`);
@@ -46,7 +63,7 @@ const connectDB = async () => {
     if (process.env.NODE_ENV === 'production' && process.env.MONGODB_URI && !process.env.VERCEL) {
       process.exit(1);
     } else {
-      console.warn('Running in standalone/serverless mode with embedded fallback data store.');
+      console.warn('Running in standalone mode with embedded fallback data store.');
     }
   }
 };
