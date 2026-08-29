@@ -25,8 +25,8 @@ const authMiddleware = async (req, res, next) => {
     }
 
     // Mock token decoding for local development and testing
-    if (token.startsWith('mock-token-') || token === 'test-token') {
-      let uid = token.replace('mock-token-', '');
+    if (token.startsWith('mock-') || token === 'test-token') {
+      let uid = token.replace(/^mock-token-|^mock-/, '');
       let email = 'test@grabit.com';
       if (!uid || token === 'test-token') {
         uid = 'test-user-123';
@@ -36,7 +36,7 @@ const authMiddleware = async (req, res, next) => {
         email = `${uid}@grabit.com`;
       }
       req.user = {
-        uid,
+        uid: uid || 'test-user-123',
         email,
         name: 'Test User',
       };

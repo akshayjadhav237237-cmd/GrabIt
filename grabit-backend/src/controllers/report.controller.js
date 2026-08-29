@@ -1,8 +1,21 @@
 const mongoose = require('mongoose');
 const { Report, User, Product } = require('../models');
+const memoryStore = require('../data/memoryStore');
 
 const VALID_REASONS = ['Spam', 'Inappropriate', 'Scam/Fraud', 'Other'];
 const VALID_TARGET_TYPES = ['product', 'user'];
+
+const findUser = async (firebaseUid, extra = {}) => {
+  if (mongoose.connection.readyState === 1) {
+    try {
+      const u = await User.findOne({ firebaseUid });
+      if (u) return u;
+    } catch (err) {
+      console.warn('[Report] User lookup notice:', err.message);
+    }
+  }
+  return memoryStore.getOrCreateUserByUid(firebaseUid, extra);
+};
 
 /**
  * Create a report for a product or user.
@@ -20,7 +33,7 @@ const createReport = async (req, res, next) => {
       });
     }
 
-    const user = await User.findOne({ firebaseUid });
+    const user = await findUser(firebaseUid, req.user);
     if (!user) {
       return res.status(404).json({
         success: false,
@@ -39,7 +52,7 @@ const createReport = async (req, res, next) => {
     }
 
     // Validate targetId
-    if (!targetId || !mongoose.Types.ObjectId.isValid(targetId)) {
+    if (!targetId) {
       return res.status(400).json({
         success: false,
         message: 'Invalid target ID',
@@ -54,15 +67,35 @@ const createReport = async (req, res, next) => {
       });
     }
 
-    // Create Report
-    const report = await Report.create({
-      reporterId: user._id,
-      targetType,
-      targetId,
-      reason,
-      details: details ? String(details).trim() : '',
-      status: 'open',
-    });
+    let report = null;
+    if (mongoose.connection.readyState === 1 && mongoose.Types.ObjectId.isValid(targetId)) {
+      try {
+        report = await Report.create({
+          reporterId: user._id,
+          targetType,
+          targetId,
+          reason,
+          details: details ? String(details).trim() : '',
+          status: 'open',
+        });
+      } catch (dbErr) {
+        console.warn('[Report] Report.create DB notice:', dbErr.message);
+      }
+    }
+
+    if (!report) {
+      report = {
+        _id: 'rep_' + Math.random().toString(36).substring(2, 10),
+        reporterId: user._id,
+        targetType,
+        targetId,
+        reason,
+        details: details ? String(details).trim() : '',
+        status: 'open',
+        createdAt: new Date(),
+      };
+      memoryStore.reportsList.push(report);
+    }
 
     return res.status(201).json({
       success: true,

@@ -1,4 +1,6 @@
+const mongoose = require('mongoose');
 const { User } = require('../models');
+const memoryStore = require('../data/memoryStore');
 
 /**
  * Generate a random referral code string (e.g. GRAB-A9B8C7)
@@ -12,12 +14,18 @@ const generateReferralCodeString = () => {
  */
 const generateUniqueReferralCode = async () => {
   let code = generateReferralCodeString();
-  let existing = await User.findOne({ referralCode: code });
-  let attempts = 0;
-  while (existing && attempts < 10) {
-    code = generateReferralCodeString();
-    existing = await User.findOne({ referralCode: code });
-    attempts++;
+  if (mongoose.connection.readyState === 1) {
+    try {
+      let existing = await User.findOne({ referralCode: code });
+      let attempts = 0;
+      while (existing && attempts < 10) {
+        code = generateReferralCodeString();
+        existing = await User.findOne({ referralCode: code });
+        attempts++;
+      }
+    } catch {
+      // ignore
+    }
   }
   return code;
 };
@@ -44,7 +52,15 @@ const syncUser = async (req, res, next) => {
       : (req.user && req.user.name);
     const inputReferralCode = (req.body && req.body.referralCode) ? String(req.body.referralCode).trim() : null;
 
-    let userDoc = await User.findOne({ firebaseUid });
+    let userDoc = null;
+
+    if (mongoose.connection.readyState === 1) {
+      try {
+        userDoc = await User.findOne({ firebaseUid });
+      } catch (err) {
+        console.warn('[Auth] DB findOne notice:', err.message);
+      }
+    }
 
     if (userDoc) {
       let modified = false;
@@ -70,30 +86,48 @@ const syncUser = async (req, res, next) => {
       });
     }
 
-    const generatedReferralCode = await generateUniqueReferralCode();
-    let referredBy = null;
+    // If MongoDB is connected, create User in DB
+    if (mongoose.connection.readyState === 1) {
+      try {
+        const generatedReferralCode = await generateUniqueReferralCode();
+        let referredBy = null;
 
-    if (inputReferralCode) {
-      const referrer = await User.findOne({
-        referralCode: { $regex: new RegExp(`^${inputReferralCode.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') },
-      });
-      if (referrer && referrer.firebaseUid !== firebaseUid) {
-        referredBy = referrer._id;
+        if (inputReferralCode) {
+          const referrer = await User.findOne({
+            referralCode: { $regex: new RegExp(`^${inputReferralCode.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') },
+          });
+          if (referrer && referrer.firebaseUid !== firebaseUid) {
+            referredBy = referrer._id;
+          }
+        }
+
+        userDoc = await User.create({
+          firebaseUid,
+          email,
+          displayName: displayName || '',
+          verification: {
+            status: 'unverified',
+          },
+          referralCode: generatedReferralCode,
+          referredBy,
+        });
+
+        return res.status(201).json({
+          success: true,
+          user: userDoc,
+        });
+      } catch (err) {
+        console.warn('[Auth] DB create notice:', err.message);
       }
     }
 
-    userDoc = await User.create({
-      firebaseUid,
+    // In-memory fallback
+    userDoc = memoryStore.getOrCreateUserByUid(firebaseUid, {
+      displayName,
       email,
-      displayName: displayName || '',
-      verification: {
-        status: 'unverified',
-      },
-      referralCode: generatedReferralCode,
-      referredBy,
     });
 
-    return res.status(201).json({
+    return res.status(200).json({
       success: true,
       user: userDoc,
     });
@@ -117,13 +151,21 @@ const getCurrentUser = async (req, res, next) => {
       });
     }
 
-    const userDoc = await User.findOne({ firebaseUid });
+    let userDoc = null;
+    if (mongoose.connection.readyState === 1) {
+      try {
+        userDoc = await User.findOne({ firebaseUid });
+      } catch (err) {
+        console.warn('[Auth] DB findOne notice:', err.message);
+      }
+    }
 
     if (!userDoc) {
-      return res.status(404).json({
-        success: false,
-        message: 'User profile not found',
-      });
+      userDoc = memoryStore.getUserByUid(firebaseUid);
+    }
+
+    if (!userDoc) {
+      userDoc = memoryStore.getOrCreateUserByUid(firebaseUid, req.user);
     }
 
     return res.status(200).json({

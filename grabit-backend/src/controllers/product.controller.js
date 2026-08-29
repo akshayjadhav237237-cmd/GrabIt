@@ -261,23 +261,23 @@ const getProducts = async (req, res, next) => {
     let total = 0;
     let products = [];
 
-    if (mongoose.connection.readyState === 1) {
-      try {
+    try {
+      if (typeof Product.countDocuments === 'function') {
         total = await Product.countDocuments(filter);
-        if (total > 0) {
+        if (total > 0 && typeof Product.find === 'function') {
           products = await Product.find(filter)
             .sort(sortOption)
             .skip(skip)
             .limit(limit)
             .populate('owner', 'displayName avatarUrl rating');
         }
-      } catch (dbErr) {
-        console.warn('[Products] DB query notice:', dbErr.message);
       }
+    } catch (dbErr) {
+      console.warn('[Products] DB query notice:', dbErr.message);
     }
 
     // Fallback to in-memory SEED_PRODUCTS if database is empty or disconnected
-    if (products.length === 0 && (!req.query.mine || req.query.mine !== 'true')) {
+    if ((!products || products.length === 0) && (!req.query.mine || req.query.mine !== 'true')) {
       let memoryList = SEED_PRODUCTS.map((p) => ({
         ...p,
         owner: DEMO_OWNER,
@@ -342,11 +342,11 @@ const getProducts = async (req, res, next) => {
 
     return res.status(200).json({
       success: true,
-      count: products.length,
+      count: (products || []).length,
       total,
       page,
       totalPages,
-      data: products,
+      data: products || [],
     });
   } catch (error) {
     next(error);
@@ -363,20 +363,18 @@ const getProductById = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    if (mongoose.connection.readyState === 1) {
-      try {
-        if (mongoose.Types.ObjectId.isValid(id)) {
-          const product = await Product.findById(id).populate('owner', 'displayName avatarUrl rating');
-          if (product) {
-            return res.status(200).json({
-              success: true,
-              data: product,
-            });
-          }
+    try {
+      if (typeof Product.findById === 'function' && mongoose.Types.ObjectId.isValid(id)) {
+        const product = await Product.findById(id).populate('owner', 'displayName avatarUrl rating');
+        if (product) {
+          return res.status(200).json({
+            success: true,
+            data: product,
+          });
         }
-      } catch (dbErr) {
-        console.warn('[Products] DB findById notice:', dbErr.message);
       }
+    } catch (dbErr) {
+      console.warn('[Products] DB findById notice:', dbErr.message);
     }
 
     // Fallback to SEED_PRODUCTS

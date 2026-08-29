@@ -1,5 +1,8 @@
 const mongoose = require('mongoose');
 
+// Globally disable command buffering so Mongoose never hangs on disconnected queries
+mongoose.set('bufferCommands', false);
+
 let cachedConnection = null;
 
 /**
@@ -19,7 +22,7 @@ const connectDB = async () => {
   const mongoURI = process.env.MONGODB_URI;
 
   // In serverless cloud environments without a configured remote MongoDB URI,
-  // skip trying to connect to localhost:27017 to eliminate 10s connection timeouts.
+  // skip trying to connect to localhost:27017 to eliminate connection timeouts.
   if (isServerless && (!mongoURI || mongoURI.includes('localhost') || mongoURI.includes('127.0.0.1'))) {
     console.log('[DB] Serverless standalone mode: serving from high-performance embedded seed store.');
     return null;
@@ -29,11 +32,14 @@ const connectDB = async () => {
 
   try {
     const conn = await mongoose.connect(targetURI, {
-      serverSelectionTimeoutMS: 2000,
-      bufferCommands: false, // Disable buffering so failed DB connects don't block
+      serverSelectionTimeoutMS: 5000,
+      connectTimeoutMS: 10000,
+      socketTimeoutMS: 45000,
+      maxPoolSize: 10,
+      bufferCommands: false,
     });
     cachedConnection = conn;
-    console.log(`MongoDB Connected: ${conn.connection.host}`);
+    console.log(`[DB] MongoDB Connected: ${conn.connection.host}`);
 
     // Auto-seed if database is empty
     try {
@@ -59,12 +65,13 @@ const connectDB = async () => {
 
     return conn;
   } catch (error) {
-    console.error(`MongoDB Connection Error: ${error.message}`);
+    console.error(`[DB] MongoDB Connection Error: ${error.message}`);
     if (process.env.NODE_ENV === 'production' && process.env.MONGODB_URI && !process.env.VERCEL) {
       process.exit(1);
     } else {
-      console.warn('Running in standalone mode with embedded fallback data store.');
+      console.warn('[DB] Falling back to high-performance embedded in-memory data store.');
     }
+    return null;
   }
 };
 
