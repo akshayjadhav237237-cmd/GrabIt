@@ -352,8 +352,8 @@ const SEED_PRODUCTS = [
       'https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=720&q=75&auto=format',
     ],
     rentalPrice: {
-      perDay: 8,
-      perWeek: 48,
+      perDay: 50,
+      perWeek: 300,
       securityDeposit: 150,
     },
     damageProtection: {
@@ -383,8 +383,8 @@ const SEED_PRODUCTS = [
       'https://images.unsplash.com/photo-1586790170083-2f9ceadc732d?auto=format&fit=crop&w=720&q=75&auto=format',
     ],
     rentalPrice: {
-      perDay: 6,
-      perWeek: 36,
+      perDay: 50,
+      perWeek: 300,
       securityDeposit: 120,
     },
     damageProtection: {
@@ -414,8 +414,8 @@ const SEED_PRODUCTS = [
       'https://images.unsplash.com/photo-1529236183275-4fdcf2bc987e?auto=format&fit=crop&w=720&q=75&auto=format',
     ],
     rentalPrice: {
-      perDay: 12,
-      perWeek: 72,
+      perDay: 50,
+      perWeek: 300,
       securityDeposit: 240,
     },
     damageProtection: {
@@ -445,8 +445,8 @@ const SEED_PRODUCTS = [
       'https://images.unsplash.com/photo-1605773527852-c546a8584ea3?auto=format&fit=crop&w=720&q=75&auto=format',
     ],
     rentalPrice: {
-      perDay: 9,
-      perWeek: 54,
+      perDay: 50,
+      perWeek: 300,
       securityDeposit: 165,
     },
     damageProtection: {
