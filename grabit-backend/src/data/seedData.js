@@ -1,6 +1,6 @@
 /**
  * Seed data for GrabIt peer-to-peer equipment rental marketplace.
- * 16 realistic products across 6 categories with authentic Indian market pricing.
+ * 16 realistic products across 6 categories located in Vadgaon, Pune with authentic Indian market pricing.
  */
 
 const DEMO_OWNER = {
@@ -43,9 +43,9 @@ const SEED_PRODUCTS = [
       fee: 150,
     },
     location: {
-      address: 'Indiranagar, 100 Feet Road',
-      city: 'Bengaluru',
-      coordinates: [77.6412, 12.9716],
+      address: 'Sinhgad Road, Vadgaon Budruk',
+      city: 'Vadgaon, Pune',
+      coordinates: [73.8340, 18.4680],
     },
     availability: {
       isAvailable: true,
@@ -74,9 +74,9 @@ const SEED_PRODUCTS = [
       fee: 300,
     },
     location: {
-      address: 'Bandra West, Hill Road',
-      city: 'Mumbai',
-      coordinates: [72.8362, 19.0596],
+      address: 'Near Sinhgad College, Vadgaon BK',
+      city: 'Vadgaon, Pune',
+      coordinates: [73.8372, 18.4645],
     },
     availability: {
       isAvailable: true,
@@ -107,9 +107,9 @@ const SEED_PRODUCTS = [
       fee: 200,
     },
     location: {
-      address: 'Koramangala 4th Block',
-      city: 'Bengaluru',
-      coordinates: [77.6245, 12.9352],
+      address: 'Dhayari Phata, Vadgaon Budruk',
+      city: 'Vadgaon, Pune',
+      coordinates: [73.8295, 18.4610],
     },
     availability: {
       isAvailable: true,
@@ -138,9 +138,9 @@ const SEED_PRODUCTS = [
       fee: 250,
     },
     location: {
-      address: 'Cyber City, DLF Phase 2, Gurugram',
-      city: 'Delhi NCR',
-      coordinates: [77.0878, 28.4906],
+      address: 'Sun City Road, Vadgaon Budruk',
+      city: 'Vadgaon, Pune',
+      coordinates: [73.8315, 18.4720],
     },
     availability: {
       isAvailable: true,
@@ -171,9 +171,9 @@ const SEED_PRODUCTS = [
       fee: 60,
     },
     location: {
-      address: 'Madhapur, Hitech City',
-      city: 'Hyderabad',
-      coordinates: [78.3869, 17.4483],
+      address: 'Nanded City Entrance, Vadgaon',
+      city: 'Vadgaon, Pune',
+      coordinates: [73.8180, 18.4590],
     },
     availability: {
       isAvailable: true,
@@ -202,9 +202,9 @@ const SEED_PRODUCTS = [
       fee: 50,
     },
     location: {
-      address: 'Kothrud, Paud Road',
-      city: 'Pune',
-      coordinates: [73.8153, 18.5074],
+      address: 'Manik Baug, Sinhgad Road, Vadgaon',
+      city: 'Vadgaon, Pune',
+      coordinates: [73.8360, 18.4750],
     },
     availability: {
       isAvailable: true,
@@ -235,9 +235,9 @@ const SEED_PRODUCTS = [
       fee: 100,
     },
     location: {
-      address: 'Andheri West, Lokhandwala',
-      city: 'Mumbai',
-      coordinates: [72.8277, 19.1417],
+      address: 'Anand Nagar, Vadgaon Budruk',
+      city: 'Vadgaon, Pune',
+      coordinates: [73.8320, 18.4780],
     },
     availability: {
       isAvailable: true,
@@ -266,9 +266,9 @@ const SEED_PRODUCTS = [
       fee: 100,
     },
     location: {
-      address: 'HSR Layout, Sector 3',
-      city: 'Bengaluru',
-      coordinates: [77.6387, 12.9121],
+      address: 'Hingne Khurd, Near Vadgaon',
+      city: 'Vadgaon, Pune',
+      coordinates: [73.8390, 18.4820],
     },
     availability: {
       isAvailable: true,
@@ -299,9 +299,9 @@ const SEED_PRODUCTS = [
       fee: 350,
     },
     location: {
-      address: 'Whitefield, ITPL Main Road',
-      city: 'Bengaluru',
-      coordinates: [77.7499, 12.9698],
+      address: 'Fun Time Multiplex Lane, Sinhgad Road, Vadgaon Budruk',
+      city: 'Vadgaon, Pune',
+      coordinates: [73.8330, 18.4710],
     },
     availability: {
       isAvailable: true,
@@ -330,9 +330,9 @@ const SEED_PRODUCTS = [
       fee: 60,
     },
     location: {
-      address: 'T. Nagar, Usman Road',
-      city: 'Chennai',
-      coordinates: [80.2337, 13.0418],
+      address: 'Navale Bridge Junction, Vadgaon',
+      city: 'Vadgaon, Pune',
+      coordinates: [73.8260, 18.4550],
     },
     availability: {
       isAvailable: true,
@@ -361,9 +361,9 @@ const SEED_PRODUCTS = [
       fee: 20,
     },
     location: {
-      address: 'Koramangala 5th Block, 80 Feet Road',
-      city: 'Bengaluru',
-      coordinates: [77.62, 12.9352],
+      address: 'Ambegaon Pathar, Near Vadgaon',
+      city: 'Vadgaon, Pune',
+      coordinates: [73.8380, 18.4520],
     },
     availability: {
       isAvailable: true,
@@ -392,9 +392,9 @@ const SEED_PRODUCTS = [
       fee: 15,
     },
     location: {
-      address: 'Andheri East, MIDC Industrial Area',
-      city: 'Mumbai',
-      coordinates: [72.8697, 19.1136],
+      address: 'Sinhgad Road, Near Abhiruchi Mall, Vadgaon',
+      city: 'Vadgaon, Pune',
+      coordinates: [73.8290, 18.4670],
     },
     availability: {
       isAvailable: true,
@@ -423,9 +423,9 @@ const SEED_PRODUCTS = [
       fee: 25,
     },
     location: {
-      address: 'Hitec City, Madhapur',
-      city: 'Hyderabad',
-      coordinates: [78.3815, 17.4483],
+      address: 'Vadgaon Budruk Main Road',
+      city: 'Vadgaon, Pune',
+      coordinates: [73.8345, 18.4690],
     },
     availability: {
       isAvailable: true,
@@ -454,9 +454,9 @@ const SEED_PRODUCTS = [
       fee: 20,
     },
     location: {
-      address: 'DLF Cyber City, Phase 2',
-      city: 'Delhi NCR',
-      coordinates: [77.0878, 28.4907],
+      address: 'Trimurti Chowk, Vadgaon BK',
+      city: 'Vadgaon, Pune',
+      coordinates: [73.8365, 18.4630],
     },
     availability: {
       isAvailable: true,
@@ -487,9 +487,9 @@ const SEED_PRODUCTS = [
       fee: 50,
     },
     location: {
-      address: 'Jayanagar 4th Block',
-      city: 'Bengaluru',
-      coordinates: [77.5838, 12.925],
+      address: 'Bramha Sky City, Vadgaon, Sinhgad Road',
+      city: 'Vadgaon, Pune',
+      coordinates: [73.8310, 18.4730],
     },
     availability: {
       isAvailable: true,
@@ -518,9 +518,9 @@ const SEED_PRODUCTS = [
       fee: 60,
     },
     location: {
-      address: 'Viman Nagar, Phoenix Marketcity Road',
-      city: 'Pune',
-      coordinates: [73.9143, 18.5679],
+      address: 'Near Sinhgad Spring Dale School, Vadgaon Budruk',
+      city: 'Vadgaon, Pune',
+      coordinates: [73.8350, 18.4660],
     },
     availability: {
       isAvailable: true,
