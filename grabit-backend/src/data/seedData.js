@@ -1,6 +1,6 @@
 /**
  * Seed data for GrabIt peer-to-peer equipment rental marketplace.
- * 12 realistic products across 6 categories with authentic Indian market pricing.
+ * 16 realistic products across 6 categories with authentic Indian market pricing.
  */
 
 const DEMO_OWNER = {
@@ -333,6 +333,130 @@ const SEED_PRODUCTS = [
       address: 'T. Nagar, Usman Road',
       city: 'Chennai',
       coordinates: [80.2337, 13.0418],
+    },
+    availability: {
+      isAvailable: true,
+      blackoutDates: [],
+    },
+    owner: DEMO_OWNER,
+  },
+  {
+    _id: '66d0a1b2c3d4e5f6a7b8c90d',
+    title: 'Portronics Toad 12 Wireless Mouse',
+    description:
+      'High-precision 2.4GHz wireless optical mouse featuring 1200 DPI optical tracking sensor, ergonomic contour grip for fatigue-free extended work sessions, high-durability 3-million click lifespan switches, smart energy-saving sleep mode, and convenient plug-and-play USB nano dongle with internal storage compartment.',
+    category: 'Electronics',
+    images: [
+      'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?auto=format&fit=crop&w=720&q=75&auto=format',
+      'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&w=720&q=75&auto=format',
+      'https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=720&q=75&auto=format',
+    ],
+    rentalPrice: {
+      perDay: 8,
+      perWeek: 48,
+      securityDeposit: 150,
+    },
+    damageProtection: {
+      isAvailable: true,
+      fee: 20,
+    },
+    location: {
+      address: 'Koramangala 5th Block, 80 Feet Road',
+      city: 'Bengaluru',
+      coordinates: [77.62, 12.9352],
+    },
+    availability: {
+      isAvailable: true,
+      blackoutDates: [],
+    },
+    owner: DEMO_OWNER,
+  },
+  {
+    _id: '66d0a1b2c3d4e5f6a7b8c90e',
+    title: 'Portronics Toad 11 Wireless Mouse',
+    description:
+      'Ultra-compact and lightweight 2.4GHz wireless optical mouse equipped with whisper-quiet silent click buttons, adjustable 1600 DPI optical sensor for precision navigation on virtually any surface, ambidextrous comfort profile, and high-efficiency power management providing up to 6 months of battery life on a single AA battery.',
+    category: 'Electronics',
+    images: [
+      'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&w=720&q=75&auto=format',
+      'https://images.unsplash.com/photo-1605773527852-c546a8584ea3?auto=format&fit=crop&w=720&q=75&auto=format',
+      'https://images.unsplash.com/photo-1586790170083-2f9ceadc732d?auto=format&fit=crop&w=720&q=75&auto=format',
+    ],
+    rentalPrice: {
+      perDay: 6,
+      perWeek: 36,
+      securityDeposit: 120,
+    },
+    damageProtection: {
+      isAvailable: true,
+      fee: 15,
+    },
+    location: {
+      address: 'Andheri East, MIDC Industrial Area',
+      city: 'Mumbai',
+      coordinates: [72.8697, 19.1136],
+    },
+    availability: {
+      isAvailable: true,
+      blackoutDates: [],
+    },
+    owner: DEMO_OWNER,
+  },
+  {
+    _id: '66d0a1b2c3d4e5f6a7b8c90f',
+    title: 'Portronics Toad One Wireless Mouse',
+    description:
+      'Advanced multi-device rechargeable wireless mouse featuring triple connectivity (Bluetooth 5.3 + Bluetooth 5.0 + 2.4GHz Wireless USB), 3-level adjustable DPI (800 / 1200 / 1600 DPI), ergonomic thumb rest contour, 500mAh built-in lithium rechargeable battery with fast Type-C charging, RGB multi-color breathing ambient illumination, and silent primary click switches.',
+    category: 'Electronics',
+    images: [
+      'https://images.unsplash.com/photo-1626785774573-4b799315345d?auto=format&fit=crop&w=720&q=75&auto=format',
+      'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?auto=format&fit=crop&w=720&q=75&auto=format',
+      'https://images.unsplash.com/photo-1529236183275-4fdcf2bc987e?auto=format&fit=crop&w=720&q=75&auto=format',
+    ],
+    rentalPrice: {
+      perDay: 12,
+      perWeek: 72,
+      securityDeposit: 240,
+    },
+    damageProtection: {
+      isAvailable: true,
+      fee: 25,
+    },
+    location: {
+      address: 'Hitec City, Madhapur',
+      city: 'Hyderabad',
+      coordinates: [78.3815, 17.4483],
+    },
+    availability: {
+      isAvailable: true,
+      blackoutDates: [],
+    },
+    owner: DEMO_OWNER,
+  },
+  {
+    _id: '66d0a1b2c3d4e5f6a7b8c910',
+    title: 'Portronics Toad 23 Wireless Mouse',
+    description:
+      'Premium dual-tone ergonomic wireless optical mouse featuring 2.4GHz lag-free reliable wireless connection up to 10 meters, silent acoustic click dampers for quiet workspace environments, 1200 DPI optical precision engine, anti-skid rubberized tactile scroll wheel, and intelligent multi-stage sleep mode for extended battery endurance.',
+    category: 'Electronics',
+    images: [
+      'https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=720&q=75&auto=format',
+      'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&w=720&q=75&auto=format',
+      'https://images.unsplash.com/photo-1605773527852-c546a8584ea3?auto=format&fit=crop&w=720&q=75&auto=format',
+    ],
+    rentalPrice: {
+      perDay: 9,
+      perWeek: 54,
+      securityDeposit: 165,
+    },
+    damageProtection: {
+      isAvailable: true,
+      fee: 20,
+    },
+    location: {
+      address: 'DLF Cyber City, Phase 2',
+      city: 'Delhi NCR',
+      coordinates: [77.0878, 28.4907],
     },
     availability: {
       isAvailable: true,
