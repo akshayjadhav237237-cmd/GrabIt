@@ -13,6 +13,7 @@ import {
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { ScreenContainer } from '../../components/ScreenContainer';
 import { TouchableScale } from '../../components/TouchableScale';
+import { OrderStatusTracker } from '../../components/OrderStatusTracker';
 import theme from '../../theme';
 import { api, BookingItem, BookingDisputeFlag } from '../../services/api';
 import { formatINR } from '../../utils';
@@ -613,6 +614,14 @@ export const BookingsScreen: React.FC = () => {
           <Text style={styles.pricingLabel}>Total Amount</Text>
           <Text style={styles.totalAmount}>{formatINR(totalAmount)}</Text>
         </View>
+
+        {/* Animated Order-Status Tracker (Shown only for active bookings) */}
+        {item.status === 'active' && (
+          <OrderStatusTracker
+            bookingId={item._id || item.id || ''}
+            isOwner={isOwnerTab}
+          />
+        )}
 
         {/* Dispute Warning Banner */}
         {item.disputeFlag?.raised && (
