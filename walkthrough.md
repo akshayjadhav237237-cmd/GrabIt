@@ -1,74 +1,55 @@
-# Catalog Update & Deployment: Portronics Toad Mouse Listings
+# Feature Implementation: Animated Order-Status Tracker (Demo Speed)
 
 ## Summary
 
-4 new Portronics Toad wireless mouse listings have been added under the **"Electronics"** category with realistic Indian retail pricing, daily rental rates at ~1–1.5% of retail, ~30% security deposits, verified working images, and distinct Indian metro cities assigned to the demo owner account.
+An interactive, animated visual order-status tracker has been added to all active booking cards in `BookingsScreen`. The tracker shows the 4 requested order stages with real-time animated stage progression at demo speed (~900ms per stage, ~3.6s total), animated progress line filling, checkpoint checks, and smart persistence using `AsyncStorage` so completed bookings stay cleanly completed on revisits.
 
 - **Live Production URL**: [https://grabit-chi.vercel.app](https://grabit-chi.vercel.app)
-- **Live Search Query**: `https://grabit-chi.vercel.app/api/products?search=Portronics`
 - **GitHub Repository**: [https://github.com/akshayjadhav237237-cmd/GrabIt](https://github.com/akshayjadhav237237-cmd/GrabIt) (Branch: `main`)
 
 ---
 
-## 1. Portronics Toad Product Listings Details
+## 1. Tracker Stages & Progression Sequence
 
-| # | Product Name | Real Retail Price | Daily Rate (`perDay`) | Weekly Rate (`perWeek`) | Security Deposit | Damage Protection Fee | Location / City | Images Status |
-| :-: | :--- | :-: | :-: | :-: | :-: | :-: | :--- | :-: |
-| 1 | **Portronics Toad 12 Wireless Mouse** | ~₹499 | **₹8 / day** | ₹48 / week | **₹150** | **₹20** | Koramangala 5th Block, **Bengaluru** | `200 OK (image/jpeg)` |
-| 2 | **Portronics Toad 11 Wireless Mouse** | ~₹399 | **₹6 / day** | ₹36 / week | **₹120** | **₹15** | Andheri East, **Mumbai** | `200 OK (image/jpeg)` |
-| 3 | **Portronics Toad One Wireless Mouse** | ~₹799 | **₹12 / day** | ₹72 / week | **₹240** | **₹25** | Hitec City, **Hyderabad** | `200 OK (image/jpeg)` |
-| 4 | **Portronics Toad 23 Wireless Mouse** | ~₹549 | **₹9 / day** | ₹54 / week | **₹165** | **₹20** | DLF Cyber City, **Delhi NCR** | `200 OK (image/jpeg)` |
-
----
-
-## 2. Product Features & Descriptions
-
-1. **Portronics Toad 12 Wireless Mouse**:
-   - 2.4GHz wireless optical mouse, 1200 DPI optical sensor, ergonomic contour grip for fatigue-free extended work sessions, 3-million click lifespan switches, smart energy-saving sleep mode, plug-and-play USB nano dongle.
-2. **Portronics Toad 11 Wireless Mouse**:
-   - Ultra-compact and lightweight, whisper-quiet silent click buttons, adjustable 1600 DPI optical sensor, ambidextrous comfort profile, up to 6 months battery life on a single AA battery.
-3. **Portronics Toad One Wireless Mouse**:
-   - Triple connectivity (Bluetooth 5.3 + Bluetooth 5.0 + 2.4GHz Wireless USB), 3-level adjustable DPI (800 / 1200 / 1600 DPI), ergonomic thumb rest contour, 500mAh built-in lithium rechargeable battery with fast Type-C charging, RGB multi-color breathing ambient illumination, silent clicks.
-4. **Portronics Toad 23 Wireless Mouse**:
-   - Premium dual-tone ergonomic body, 2.4GHz lag-free reliable wireless connection up to 10m, silent acoustic click dampers, 1200 DPI optical engine, anti-skid rubberized tactile scroll wheel, auto-sleep battery endurance.
-
----
-
-## 3. Seed & Codebase Integration
-
-- **Seed Data Source**: Added to [`grabit-backend/src/data/seedData.js`](file:///c:/Users/aksha/Documents/antigravity/happy-borg/grabit-backend/src/data/seedData.js).
-- **In-Memory Store**: Automatically loaded by [`grabit-backend/src/data/memoryStore.js`](file:///c:/Users/aksha/Documents/antigravity/happy-borg/grabit-backend/src/data/memoryStore.js).
-- **Reproducible Seed Script**: Integrated into [`grabit-backend/scripts/seed-products.js`](file:///c:/Users/aksha/Documents/antigravity/happy-borg/grabit-backend/scripts/seed-products.js).
-- **Total Seed Catalog**: Expanded from 12 to **16 products** across all 6 marketplace categories.
-
----
-
-## 4. Live Production Verification Results
+The progress line connects 4 distinct stages at demo speed (~900ms transition per stage, sequenced with `Animated.timing`):
 
 ```
---- VERIFYING PORTRONICS TOAD LISTINGS ON LIVE PRODUCTION ---
-Search Portronics response status: 200 | Total found: 4
-
-• Title: Portronics Toad 12 Wireless Mouse (66d0a1b2c3d4e5f6a7b8c90d)
-  Daily Rate: ₹8/day | Weekly: ₹48 | Deposit: ₹150 | Damage Fee: ₹20
-  Location: Koramangala 5th Block, 80 Feet Road, Bengaluru
-  Image status: 200 (image/jpeg)
-
-• Title: Portronics Toad 11 Wireless Mouse (66d0a1b2c3d4e5f6a7b8c90e)
-  Daily Rate: ₹6/day | Weekly: ₹36 | Deposit: ₹120 | Damage Fee: ₹15
-  Location: Andheri East, MIDC Industrial Area, Mumbai
-  Image status: 200 (image/jpeg)
-
-• Title: Portronics Toad One Wireless Mouse (66d0a1b2c3d4e5f6a7b8c90f)
-  Daily Rate: ₹12/day | Weekly: ₹72 | Deposit: ₹240 | Damage Fee: ₹25
-  Location: Hitec City, Madhapur, Hyderabad
-  Image status: 200 (image/jpeg)
-
-• Title: Portronics Toad 23 Wireless Mouse (66d0a1b2c3d4e5f6a7b8c910)
-  Daily Rate: ₹9/day | Weekly: ₹54 | Deposit: ₹165 | Damage Fee: ₹20
-  Location: DLF Cyber City, Phase 2, Delhi NCR
-  Image status: 200 (image/jpeg)
-
-Electronics category total listings: 6
-✓ ALL 4 PORTRONICS TOAD LISTINGS ARE LIVE AND FULLY FUNCTIONAL ON PRODUCTION!
+[1. Booking Confirmed] ──> [2. Item Being Packed] ──> [3. Out for Delivery] ──> [4. Delivered to You]
 ```
+
+| Stage Index | Stage Title | Stage Subtitle / Description | Visual State Transition |
+| :-: | :--- | :--- | :--- |
+| **0** | **Booking Confirmed** | Payment verified & order confirmed | Active pulsating indicator with terracotta ring |
+| **1** | **Item Being Packed** | Lender inspecting & packing gear | Track fills to 33%, Stage 1 marked with `CheckIcon` |
+| **2** | **Out for Delivery** | Equipment in transit to your address | Track fills to 66%, Stage 2 marked with `CheckIcon` |
+| **3** | **Delivered to You** | Rental active — enjoy your gear! | Track fills to 100%, Stage 4 marked with `CheckIcon`, header shows "Delivered" |
+
+---
+
+## 2. Replay & Persistence Behavior
+
+- **Initial Play**: When an active booking is viewed for the first time, `OrderStatusTracker` auto-plays the sequenced animation across all 4 stages in ~3.6s.
+- **Persistence (`AsyncStorage`)**: Upon reaching "Delivered to You", the tracker saves `grabit_order_tracker_done_${bookingId} = 'true'`.
+- **Subsequent Views**: When the user navigates away and returns to "My Bookings", the component detects the saved key and renders directly in the **fully completed, verified state** (`progress = 100%`, all 4 checkpoints checked) without jarring repeated re-animations.
+- **Active Filter Condition**: Rendered exclusively on bookings with `item.status === 'active'` (i.e. confirmed and paid rentals). Pending, unconfirmed, completed, and cancelled cards remain free of the tracker.
+
+---
+
+## 3. UI & Design Token Architecture
+
+- **Component**: [`grabit-app/src/components/OrderStatusTracker.tsx`](file:///c:/Users/aksha/Documents/antigravity/happy-borg/grabit-app/src/components/OrderStatusTracker.tsx)
+- **Theme Compliance**:
+  - Container: `theme.colors.surfaceSubtle` with `theme.colors.border` and `theme.borderRadius.md`.
+  - Progress line: `theme.colors.accent` (Warm Terracotta `#D97D3F`) animated width interpolation.
+  - Active / Completed Nodes: `theme.colors.accent` background with `CheckIcon` in `theme.colors.textInverse`.
+  - Live Demo Badge: `theme.colors.accentTint` background with `theme.colors.accentDark` text.
+- **Screen Integration**: Embedded in [`grabit-app/src/screens/main/BookingsScreen.tsx`](file:///c:/Users/aksha/Documents/antigravity/happy-borg/grabit-app/src/screens/main/BookingsScreen.tsx).
+
+---
+
+## 4. Verification Results
+
+1. **TypeScript (`tsc --noEmit`)**: 0 errors.
+2. **Production Web Bundle**: Built and exported cleanly (`expo export -p web`).
+3. **Production Deployment**: Live on Vercel at `https://grabit-chi.vercel.app`.
+4. **Live Bundle Inspection**: Verified that the live production bundle contains `OrderStatusTracker`, `Item Being Packed`, `Out for Delivery`, and `Delivered to You`.
