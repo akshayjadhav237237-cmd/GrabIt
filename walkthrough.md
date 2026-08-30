@@ -1,55 +1,36 @@
-# Feature Implementation: Animated Order-Status Tracker (Demo Speed)
+# Pricing Update: Portronics Toad Wireless Mice at ₹50 / day
 
 ## Summary
 
-An interactive, animated visual order-status tracker has been added to all active booking cards in `BookingsScreen`. The tracker shows the 4 requested order stages with real-time animated stage progression at demo speed (~900ms per stage, ~3.6s total), animated progress line filling, checkpoint checks, and smart persistence using `AsyncStorage` so completed bookings stay cleanly completed on revisits.
+The daily rental rate for all Portronics Toad wireless mouse models has been updated to **₹50 / day** (with ₹300 / week pricing) located in **Vadgaon, Pune**.
 
 - **Live Production URL**: [https://grabit-chi.vercel.app](https://grabit-chi.vercel.app)
+- **Live Search Query**: `https://grabit-chi.vercel.app/api/products?search=Portronics`
 - **GitHub Repository**: [https://github.com/akshayjadhav237237-cmd/GrabIt](https://github.com/akshayjadhav237237-cmd/GrabIt) (Branch: `main`)
 
 ---
 
-## 1. Tracker Stages & Progression Sequence
+## 1. Updated Mouse Pricing & Location Details
 
-The progress line connects 4 distinct stages at demo speed (~900ms transition per stage, sequenced with `Animated.timing`):
+| # | Product Name | Daily Rate (`perDay`) | Weekly Rate (`perWeek`) | Security Deposit | Damage Fee | Location |
+| :-: | :--- | :-: | :-: | :-: | :-: | :--- |
+| 1 | **Portronics Toad 12 Wireless Mouse** | **₹50 / day** | **₹300 / week** | ₹150 | ₹20 | Ambegaon Pathar, **Vadgaon, Pune** |
+| 2 | **Portronics Toad 11 Wireless Mouse** | **₹50 / day** | **₹300 / week** | ₹120 | ₹15 | Near Abhiruchi Mall, **Vadgaon, Pune** |
+| 3 | **Portronics Toad One Wireless Mouse** | **₹50 / day** | **₹300 / week** | ₹240 | ₹25 | Vadgaon Budruk Main Road, **Vadgaon, Pune** |
+| 4 | **Portronics Toad 23 Wireless Mouse** | **₹50 / day** | **₹300 / week** | ₹165 | ₹20 | Trimurti Chowk, **Vadgaon, Pune** |
+
+---
+
+## 2. Live Production Verification Output
 
 ```
-[1. Booking Confirmed] ──> [2. Item Being Packed] ──> [3. Out for Delivery] ──> [4. Delivered to You]
+--- PORTRONICS MOUSE PRICING ON LIVE PRODUCTION ---
+• Portronics Toad 12 Wireless Mouse
+  Price: ₹50/day | Week: ₹300 | City: Vadgaon, Pune
+• Portronics Toad 11 Wireless Mouse
+  Price: ₹50/day | Week: ₹300 | City: Vadgaon, Pune
+• Portronics Toad One Wireless Mouse
+  Price: ₹50/day | Week: ₹300 | City: Vadgaon, Pune
+• Portronics Toad 23 Wireless Mouse
+  Price: ₹50/day | Week: ₹300 | City: Vadgaon, Pune
 ```
-
-| Stage Index | Stage Title | Stage Subtitle / Description | Visual State Transition |
-| :-: | :--- | :--- | :--- |
-| **0** | **Booking Confirmed** | Payment verified & order confirmed | Active pulsating indicator with terracotta ring |
-| **1** | **Item Being Packed** | Lender inspecting & packing gear | Track fills to 33%, Stage 1 marked with `CheckIcon` |
-| **2** | **Out for Delivery** | Equipment in transit to your address | Track fills to 66%, Stage 2 marked with `CheckIcon` |
-| **3** | **Delivered to You** | Rental active — enjoy your gear! | Track fills to 100%, Stage 4 marked with `CheckIcon`, header shows "Delivered" |
-
----
-
-## 2. Replay & Persistence Behavior
-
-- **Initial Play**: When an active booking is viewed for the first time, `OrderStatusTracker` auto-plays the sequenced animation across all 4 stages in ~3.6s.
-- **Persistence (`AsyncStorage`)**: Upon reaching "Delivered to You", the tracker saves `grabit_order_tracker_done_${bookingId} = 'true'`.
-- **Subsequent Views**: When the user navigates away and returns to "My Bookings", the component detects the saved key and renders directly in the **fully completed, verified state** (`progress = 100%`, all 4 checkpoints checked) without jarring repeated re-animations.
-- **Active Filter Condition**: Rendered exclusively on bookings with `item.status === 'active'` (i.e. confirmed and paid rentals). Pending, unconfirmed, completed, and cancelled cards remain free of the tracker.
-
----
-
-## 3. UI & Design Token Architecture
-
-- **Component**: [`grabit-app/src/components/OrderStatusTracker.tsx`](file:///c:/Users/aksha/Documents/antigravity/happy-borg/grabit-app/src/components/OrderStatusTracker.tsx)
-- **Theme Compliance**:
-  - Container: `theme.colors.surfaceSubtle` with `theme.colors.border` and `theme.borderRadius.md`.
-  - Progress line: `theme.colors.accent` (Warm Terracotta `#D97D3F`) animated width interpolation.
-  - Active / Completed Nodes: `theme.colors.accent` background with `CheckIcon` in `theme.colors.textInverse`.
-  - Live Demo Badge: `theme.colors.accentTint` background with `theme.colors.accentDark` text.
-- **Screen Integration**: Embedded in [`grabit-app/src/screens/main/BookingsScreen.tsx`](file:///c:/Users/aksha/Documents/antigravity/happy-borg/grabit-app/src/screens/main/BookingsScreen.tsx).
-
----
-
-## 4. Verification Results
-
-1. **TypeScript (`tsc --noEmit`)**: 0 errors.
-2. **Production Web Bundle**: Built and exported cleanly (`expo export -p web`).
-3. **Production Deployment**: Live on Vercel at `https://grabit-chi.vercel.app`.
-4. **Live Bundle Inspection**: Verified that the live production bundle contains `OrderStatusTracker`, `Item Being Packed`, `Out for Delivery`, and `Delivered to You`.
